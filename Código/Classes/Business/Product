@@ -1,0 +1,36 @@
+package entidades;
+
+	public class Produto {
+	public static float PRECO_BASE[];
+	private String tipo;
+	
+	public Produto() {
+	}
+	
+
+	public static float[] getPRECO_BASE() {
+		return PRECO_BASE;
+	}
+
+
+	public static void setPRECO_BASE(float[] pRECO_BASE) {
+		PRECO_BASE = pRECO_BASE;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public float[] precoVenda() {
+		return getPRECO_BASE();
+	}
+	@Override
+	public String toString() {
+		return "Produto [PRECO_BASE=" + PRECO_BASE + ", tipo=" + tipo + "]";
+	}
+	
+}
