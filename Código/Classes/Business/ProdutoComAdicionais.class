@@ -1,0 +1,42 @@
+package entidades;
+
+public class ProdutosComAdicionais extends Produto {
+	private double PRECO_ADC;
+	private String adicionais;
+	
+	public ProdutosComAdicionais() {
+		
+	}
+
+	public ProdutosComAdicionais(double pRECO_ADC, String adicionais) {
+		PRECO_ADC = pRECO_ADC;
+		this.adicionais = adicionais;
+	}
+
+	public ProdutosComAdicionais(String nomeDoProduto, double pRECO_BASE) {
+		super(nomeDoProduto, pRECO_BASE);
+	}
+	
+	public double getPRECO_ADC() {
+		return PRECO_ADC;
+	}
+
+	public void setPRECO_ADC(double pRECO_ADC) {
+		PRECO_ADC = pRECO_ADC;
+	}
+
+	public String getAdicionais() {
+		return adicionais;
+	}
+
+	public void setAdicionais(String adicionais) {
+		this.adicionais = adicionais;
+	}
+
+	public double precoVenda() {
+		return PRECO_ADC+getPRECO_BASE();
+	}
+	public String toString() {
+		return "Produto" +getNomeDoProduto()+ "com os adicionais"+adicionais+"ficou em:"+precoVenda();
+	}
+}
