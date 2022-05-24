@@ -1,5 +1,3 @@
-package entidades;
-
 public class ProdutosComAdicionais extends Produto {
 	private double PRECO_ADC;
 	private String adicionais;
@@ -13,8 +11,8 @@ public class ProdutosComAdicionais extends Produto {
 		this.adicionais = adicionais;
 	}
 
-	public ProdutosComAdicionais(String nomeDoProduto, double pRECO_BASE) {
-		super(nomeDoProduto, pRECO_BASE);
+	public ProdutosComAdicionais(String nomeDoProduto, double precoBase) {
+		super(nomeDoProduto, precoBase);
 	}
 	
 	public double getPRECO_ADC() {
@@ -34,9 +32,10 @@ public class ProdutosComAdicionais extends Produto {
 	}
 
 	public double precoVenda() {
-		return PRECO_ADC+getPRECO_BASE();
+		return PRECO_ADC+getPrecoBase();
 	}
+	
 	public String toString() {
-		return "Produto" +getNomeDoProduto()+ "com os adicionais"+adicionais+"ficou em:"+precoVenda();
+		return "Produto" +getNome()+ "com os adicionais"+adicionais+"ficou em:"+precoVenda();
 	}
 }

@@ -1,6 +1,6 @@
 public class FBranco implements IFidelidade {
     @Override
-    public float calcularDesconto(Pedido pedido) {
+    public double calcularDesconto(Pedido pedido) {
         return pedido.valorTotal();
     }
 }

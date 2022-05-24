@@ -1,3 +1,3 @@
 public interface IFidelidade {
-    public float calcularDesconto(Pedido pedido);
+    public double calcularDesconto(Pedido pedido);
 }

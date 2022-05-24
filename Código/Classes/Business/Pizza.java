@@ -1,5 +1,3 @@
-package entidades;
-
 public class Pizza extends ProdutosComAdicionais {
 	private boolean bordaRecheada;
 	
@@ -19,7 +17,8 @@ public class Pizza extends ProdutosComAdicionais {
 	public void setBordaRecheada(boolean bordaRecheada) {
 		this.bordaRecheada = bordaRecheada;
 	}
-	public float[] precoVenda() {
-		return null;
+	
+	public double precoVenda() {
+		return 0;
 	}
 }

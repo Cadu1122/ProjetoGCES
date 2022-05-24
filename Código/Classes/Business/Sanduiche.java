@@ -1,6 +1,4 @@
-package entidades;
-
-public class Sanduiche extends ProdutosComAdicionais{
+public class Sanduiche extends ProdutosComAdicionais {
 	private boolean paoArtesanal;
 	
 	public Sanduiche() {
@@ -25,8 +23,9 @@ public class Sanduiche extends ProdutosComAdicionais{
 	}
 
 	public double precoVenda() {
-		return getPRECO_BASE()+getPRECO_ADC();
+		return getPrecoBase()+getPRECO_ADC();
 	}
+	
 	public String toString() {
 		return "Preço do Sanduiche com pão artesanal:"+precoVenda();
 	}
