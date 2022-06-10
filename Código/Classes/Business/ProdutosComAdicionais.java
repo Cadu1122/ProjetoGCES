@@ -1,3 +1,5 @@
+package Business;
+
 public class ProdutosComAdicionais extends Produto {
 	private double PRECO_ADC;
 	private String adicionais;
@@ -6,8 +8,8 @@ public class ProdutosComAdicionais extends Produto {
 		
 	}
 
-	public ProdutosComAdicionais(double pRECO_ADC, String adicionais) {
-		PRECO_ADC = pRECO_ADC;
+	public ProdutosComAdicionais(double PRECO_ADC, String adicionais) {
+		PRECO_ADC = PRECO_ADC;
 		this.adicionais = adicionais;
 	}
 

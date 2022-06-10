@@ -1,5 +1,13 @@
-public class Produto {
-	public static float PRECO_BASE[];
+package Business;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
+
+public class Produto implements Serializable {
+	public static final Map<String, Double> PRECO_BASE = Collections.unmodifiableMap(Map.of("agua", 2d,
+			"suco", 5d, "refrigerante", 5d, "cerveja", 8d, "prato feito", 15d, "pizza",
+			25d, "sanduiche", 12d));
 	private String tipo;
 	private String nome;
 	private double precoBase;
@@ -25,16 +33,6 @@ public class Produto {
 	public Produto(String nome, double precoBase) {
 		this.setNome(nome);
 		this.setPrecoBase(precoBase);
-	}
-	
-
-	public static float[] getPRECO_BASE() {
-		return PRECO_BASE;
-	}
-
-
-	public static void setPRECO_BASE(float[] pRECO_BASE) {
-		PRECO_BASE = pRECO_BASE;
 	}
 
 	public String getTipo() {

@@ -1,16 +1,19 @@
-import java.time.LocalDateTime;
+package Business;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
+public class Pedido implements Serializable {
     private int ID;
-    private LocalDateTime data;
+    private LocalDate data;
     private int avaliacao;
-    private int valorTotal;
+    private double valorTotal;
     private Cliente cliente;
     private List<Produto> produtos = new ArrayList<>();
 
-    public Pedido(int ID, LocalDateTime data, Cliente cliente){
+    public Pedido(int ID, LocalDate data, Cliente cliente){
         this.setID(ID);
         this.setData(data);
         this.setCliente(cliente);
@@ -25,12 +28,8 @@ public class Pedido {
         cliente.addPedido(this);
     }
 
-    public int getValorTotal() {
+    public double getValorTotal() {
         return valorTotal;
-    }
-
-    public void setValorTotal(int valorTotal) {
-        this.valorTotal = valorTotal;
     }
 
     public int getAvaliacao() {
@@ -41,11 +40,11 @@ public class Pedido {
         this.avaliacao = avaliacao;
     }
 
-    public LocalDateTime getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
@@ -62,8 +61,6 @@ public class Pedido {
 
         for(Produto produto: produtos)
             total += produto.precoVenda();
-
-        total -= ((total * cliente.calcularDesconto(this)) / 100);
 
         return total;
     }

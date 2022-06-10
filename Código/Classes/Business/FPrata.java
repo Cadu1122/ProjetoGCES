@@ -1,3 +1,5 @@
+package Business;
+
 public class FPrata implements IFidelidade {
     public static final float VALOR_DESC = 0.05F;
 
