@@ -1,28 +1,23 @@
 package Business;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class ProdutosComAdicionais extends Produto {
-	private double PRECO_ADC;
 	private String adicionais;
+	public static final Map<String, Double> PRECO_ADC = Collections.unmodifiableMap(Map.of("peperoni", 4d,
+	"bacon", 3d, "palmito", 3d, "queijo", 2d, "picles", 2d, "ovo",
+	2d, "batata palha", 2d));
 	
 	public ProdutosComAdicionais() {
-		
 	}
 
-	public ProdutosComAdicionais(double PRECO_ADC, String adicionais) {
-		PRECO_ADC = PRECO_ADC;
+	public ProdutosComAdicionais(String adicionais) {
 		this.adicionais = adicionais;
 	}
 
 	public ProdutosComAdicionais(String nomeDoProduto, double precoBase) {
 		super(nomeDoProduto, precoBase);
-	}
-	
-	public double getPRECO_ADC() {
-		return PRECO_ADC;
-	}
-
-	public void setPRECO_ADC(double pRECO_ADC) {
-		PRECO_ADC = pRECO_ADC;
 	}
 
 	public String getAdicionais() {
