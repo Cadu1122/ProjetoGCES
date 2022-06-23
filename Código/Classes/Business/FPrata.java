@@ -1,10 +1,10 @@
 package Business;
 
 public class FPrata implements IFidelidade {
-    public static final float VALOR_DESC = 0.05F;
+    public static final double VALOR_DESC = 0.05F;
 
     @Override
-    public double calcularDesconto(Pedido pedido) {
-        return pedido.valorTotal() * (1 - VALOR_DESC);
+    public void calcularDesconto(Pedido pedido) {
+        pedido.setValorPago(pedido.valorTotal() * (1 - VALOR_DESC));
     }
 }

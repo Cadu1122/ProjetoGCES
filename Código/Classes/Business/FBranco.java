@@ -2,7 +2,7 @@ package Business;
 
 public class FBranco implements IFidelidade {
     @Override
-    public double calcularDesconto(Pedido pedido) {
-        return pedido.valorTotal();
+    public void calcularDesconto(Pedido pedido) {
+        pedido.setValorPago(pedido.valorTotal());
     }
 }

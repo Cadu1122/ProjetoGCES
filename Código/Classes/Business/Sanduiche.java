@@ -1,35 +1,31 @@
 package Business;
 
 public class Sanduiche extends ProdutosComAdicionais {
+	public static final double PRECO_PAO_ARTESANAL = 2d;
+
 	private boolean paoArtesanal;
-	
-	public Sanduiche() {
-	}
 
-	public Sanduiche(boolean bordaRecheada, double precoAdicional) {
-		this.paoArtesanal = bordaRecheada;
-
-	}
-
-	public Sanduiche(double pRECO_ADC, String adicionais, boolean bordaRecheada) {
-		super(pRECO_ADC, adicionais);
-		this.paoArtesanal = bordaRecheada;
+	public Sanduiche(boolean paoArtesanal) {
+		super(OpcoesComida.SANDUICHE.getPreco());
+		this.paoArtesanal = paoArtesanal;
 	}
 	
-	public boolean isBordaRecheada() {
+	public boolean isPaoArtesanal() {
 		return paoArtesanal;
 	}
 
-	public void setBordaRecheada(boolean bordaRecheada) {
-		this.paoArtesanal = bordaRecheada;
+	public double precoVenda() {
+		return getPrecoBase() + precoAdicionais() + (isPaoArtesanal() ? PRECO_PAO_ARTESANAL : 0);
 	}
 
-	public double precoVenda() {
-		return getPrecoBase()+getPRECO_ADC();
-	}
-	
+	@Override
 	public String toString() {
-		return "Preço do Sanduiche com pão artesanal:"+precoVenda();
+		return "Produto: Sanduíche; Adicionais: " + 
+		this.getAdicionais().stream()
+			.map(a -> a.toString())
+			.reduce((a, b) -> a.concat(", " + b))
+			.orElse("sem adicionais") + 
+		"; Preço: R$" + this.precoVenda();
 	}
 }
 

@@ -3,11 +3,12 @@ package Business;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Cliente implements Serializable {
+    public static final long serialVersionUID = 2496;
     private IFidelidade fidelidade;
     private String nome;
     private String cpf;
@@ -20,23 +21,33 @@ public class Cliente implements Serializable {
     }
 
     public void addPedido(Pedido pedido){
+        calcularDesconto(pedido);
         this.pedidos.add(pedido);
-        verificarFidelidade();
     }
 
+    /**
+     * Calcula a média de avaliações feitas por esse cliente retorna 0 caso o cliente não tenha avaliado nenhum pedido
+     * @return Media das avaliações
+     */
     public double mediaAvaliacoes(){
-        double total = 0;
-
-        for(Pedido pedido : pedidos)
-            total += pedido.getAvaliacao();
-        
-        return total / pedidos.size();
+        return pedidos.stream()
+            .mapToInt(a -> a.getAvaliacao())
+            .average()
+            .orElse(0);
     }
 
-    public double calcularDesconto(Pedido pedido) {
-        return fidelidade.calcularDesconto(pedido);
+    /**
+     * Calcula o desconto do cliente baseado em seu tipo de fidelidade
+     * @param pedido Pedido que se deseja calcular o desconto
+     */
+    private void calcularDesconto(Pedido pedido) {
+        verificarFidelidade();
+        fidelidade.calcularDesconto(pedido);
     }
 
+    /**
+     * Verifica em qual fidelidade o cliente se encontra baseado na regra de negócio de cada um
+     */
     private void verificarFidelidade() {
         if (isFidelidadeFEV()) {
             this.fidelidade = new FFEV();
@@ -49,40 +60,46 @@ public class Cliente implements Serializable {
         }
     }
 
+    /**
+     * Verifica se o cliente deveria estar na fidelidade F&V ou não
+     * @return true caso o cliente deveria estar nessa fidelidade, false caso contrário
+     */
     private boolean isFidelidadeFEV() {
-        Set<Pedido> filtro = pedidos.stream()
-            .collect(Collectors.filtering(pedido -> pedido.getData().isAfter(LocalDate.now().minus(6, ChronoUnit.MONTHS)), Collectors.toSet()));
-        double somaValores = filtro.stream()
-            .mapToDouble(pedido -> pedido.getValorTotal())
-            .sum();
-        int qtdPedidos = pedidos.size();
-        if(somaValores >= 600 || qtdPedidos >= 50) {
+        DoubleSummaryStatistics estatisticasValores = pedidos.stream()
+            .filter(pedido -> pedido.getData().isAfter(LocalDate.now().minus(6, ChronoUnit.MONTHS)))
+            .mapToDouble(pedido -> pedido.valorTotal())
+            .summaryStatistics();
+        if(estatisticasValores.getSum() >= 600 || estatisticasValores.getCount() >= 50) {
             return true;
         }
         return false;
     }
 
+    /**
+     * Verifica se o cliente deveria estar na fidelidade preto ou não
+     * @return true caso o cliente deveria estar nessa fidelidade, false caso contrário
+     */
     private boolean isFidelidadePreto() {
-        Set<Pedido> filtro = pedidos.stream()
-            .collect(Collectors.filtering(pedido -> pedido.getData().isAfter(LocalDate.now().minus(2, ChronoUnit.MONTHS)), Collectors.toSet()));
-        double somaValores = filtro.stream()
-            .mapToDouble(pedido -> pedido.getValorTotal())
-            .sum();
-        int qtdPedidos = pedidos.size();
-        if(somaValores >= 250 || qtdPedidos >= 10) {
+        DoubleSummaryStatistics estatisticasValores = pedidos.stream()
+            .filter(pedido -> pedido.getData().isAfter(LocalDate.now().minus(2, ChronoUnit.MONTHS)))
+            .mapToDouble(pedido -> pedido.valorTotal())
+            .summaryStatistics();
+        if(estatisticasValores.getSum() >= 250 || estatisticasValores.getCount() >= 10) {
             return true;
         }
         return false;
     }
 
+    /**
+     * Verifica se o cliente deveria estar na fidelidade prata ou não
+     * @return true caso o cliente deveria estar nessa fidelidade, false caso contrário
+     */
     private boolean isFidelidadePrata() {
-        Set<Pedido> filtro = pedidos.stream()
-            .collect(Collectors.filtering(pedido -> pedido.getData().isAfter(LocalDate.now().minus(1, ChronoUnit.MONTHS)), Collectors.toSet()));
-        double somaValores = filtro.stream()
-            .mapToDouble(pedido -> pedido.getValorTotal())
-            .sum();
-        int qtdPedidos = pedidos.size();
-        if(somaValores >= 100 || qtdPedidos >= 4) {
+        DoubleSummaryStatistics estatisticasValores = pedidos.stream()
+            .filter(pedido -> pedido.getData().isAfter(LocalDate.now().minus(1, ChronoUnit.MONTHS)))
+            .mapToDouble(pedido -> pedido.valorTotal())
+            .summaryStatistics();
+        if(estatisticasValores.getSum() >= 100 || estatisticasValores.getCount() >= 4) {
             return true;
         }
         return false;
@@ -98,6 +115,10 @@ public class Cliente implements Serializable {
 
     public IFidelidade getFidelidade() {
         return fidelidade;
+    }
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
     }
 
     @Override
