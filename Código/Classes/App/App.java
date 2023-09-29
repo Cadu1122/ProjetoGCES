@@ -16,15 +16,15 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
-import Business.Bebida;
-import Business.Cliente;
-import Business.OpcoesAdicionais;
-import Business.OpcoesBebida;
-import Business.Pedido;
-import Business.Pizza;
-import Business.PratoFeito;
-import Business.Produto;
-import Business.Sanduiche;
+import Business.Venda.Cliente;
+import Business.Produtos.OpcoesAdicionais;
+import Business.Produtos.OpcoesBebida;
+import Business.Venda.Pedido;
+import Business.Produtos.Pizza;
+import Business.Produtos.PratoFeito;
+import Business.Produtos.Produto;
+import Business.Produtos.Sanduiche;
+import Business.Produtos.Bebida;
 
 public class App {
     public static final File ARQUIVO_ARMAZENAMENTO = new File("historico.dat");
