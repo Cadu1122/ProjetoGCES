@@ -1,4 +1,4 @@
-package Business;
+package Business.Produtos;
 
 public class Bebida extends Produto {
     private OpcoesBebida tipo;

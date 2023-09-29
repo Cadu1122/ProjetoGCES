@@ -1,4 +1,4 @@
-package Business;
+package Business.Produtos;
 
 public class PratoFeito extends Produto {
     public PratoFeito() {

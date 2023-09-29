@@ -1,4 +1,4 @@
-package Business;
+package Business.Venda;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+
+import Business.Produtos.Produto;
 
 public class Pedido implements Serializable {
     public static final long serialVersionUID = 2469;
@@ -24,7 +26,7 @@ public class Pedido implements Serializable {
     }
 
     public void addProduto(Produto produto) {
-        if(produtos.size() < 10) {
+        if(produtos.size() > 10) {
             throw new IndexOutOfBoundsException("O pedido não pode ter mais de 10 produtos");
         }
         produtos.add(produto);

@@ -1,4 +1,4 @@
-package Business;
+package Business.Produtos;
 
 public enum OpcoesAdicionais {
     PEPPERONI(4),

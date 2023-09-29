@@ -1,4 +1,4 @@
-package Business;
+package Business.Produtos;
 
 import java.io.Serializable;
 

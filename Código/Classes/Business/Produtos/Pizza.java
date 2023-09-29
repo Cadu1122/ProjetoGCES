@@ -1,4 +1,4 @@
-package Business;
+package Business.Produtos;
 
 public class Pizza extends ProdutosComAdicionais {
 	public static final double PRECO_BORDA_RECHEADA = 8;
