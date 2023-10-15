@@ -1,7 +1,7 @@
-package Business;
+package ProjetoGCES.Business;
 
-public class FPreto implements IFidelidade {
-    public static final double VALOR_DESC = 0.1F;
+public class FPrata implements IFidelidade {
+    public static final double VALOR_DESC = 0.05F;
 
     @Override
     public void calcularDesconto(Pedido pedido) {

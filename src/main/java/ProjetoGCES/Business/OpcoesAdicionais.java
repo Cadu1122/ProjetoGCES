@@ -1,14 +1,17 @@
-package Business;
+package ProjetoGCES.Business;
 
-public enum OpcoesBebida {
-    CERVEJA(8),
-    AGUA(2),
-    SUCO(5),
-    REFRIGERANTE(5);
+public enum OpcoesAdicionais {
+    PEPPERONI(4),
+    BACON(3),
+    PALMITO(3),
+    QUEIJO(2),
+    PICLES(2),
+    OVO(2),
+    BATATA_PALHA(2);
 
     private double preco;
-    
-    private OpcoesBebida(double preco) {
+
+    private OpcoesAdicionais(double preco) {
         this.preco = preco;
     }
 

@@ -1,4 +1,4 @@
-package Business;
+package ProjetoGCES.Business;
 
 public class PratoFeito extends Produto {
     public PratoFeito() {
