@@ -16,15 +16,15 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
-import ProjetoGCES.Business.Bebida;
-import ProjetoGCES.Business.Cliente;
-import ProjetoGCES.Business.OpcoesAdicionais;
-import ProjetoGCES.Business.OpcoesBebida;
-import ProjetoGCES.Business.Pedido;
-import ProjetoGCES.Business.Pizza;
-import ProjetoGCES.Business.PratoFeito;
-import ProjetoGCES.Business.Produto;
-import ProjetoGCES.Business.Sanduiche;
+import Business.Produtos.Bebida;
+import Business.Venda.Cliente;
+import Business.Produtos.OpcoesAdicionais;
+import Business.Produtos.OpcoesBebida;
+import Business.Venda.Pedido;
+import Business.Produtos.Pizza;
+import Business.Produtos.PratoFeito;
+import Business.Produtos.Produto;
+import Business.Produtos.Sanduiche;
 
 public class App {
     public static final File ARQUIVO_ARMAZENAMENTO = new File("historico.dat");
