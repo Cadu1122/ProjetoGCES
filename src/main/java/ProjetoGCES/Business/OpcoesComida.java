@@ -1,17 +1,13 @@
-package Business;
+package ProjetoGCES.Business;
 
-public enum OpcoesAdicionais {
-    PEPPERONI(4),
-    BACON(3),
-    PALMITO(3),
-    QUEIJO(2),
-    PICLES(2),
-    OVO(2),
-    BATATA_PALHA(2);
+public enum OpcoesComida {
+    PRATO_FEITO(15),
+    SANDUICHE(12),
+    PIZZA(25);
 
     private double preco;
 
-    private OpcoesAdicionais(double preco) {
+    private OpcoesComida(double preco) {
         this.preco = preco;
     }
 

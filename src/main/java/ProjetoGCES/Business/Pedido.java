@@ -1,4 +1,4 @@
-package Business;
+package ProjetoGCES.Business;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;

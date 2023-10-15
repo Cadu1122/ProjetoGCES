@@ -1,4 +1,4 @@
-package Business;
+package ProjetoGCES.Business;
 
 public class Sanduiche extends ProdutosComAdicionais {
 	public static final double PRECO_PAO_ARTESANAL = 2d;

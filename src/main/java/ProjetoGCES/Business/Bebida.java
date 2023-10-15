@@ -1,4 +1,4 @@
-package Business;
+package ProjetoGCES.Business;
 
 public class Bebida extends Produto {
     private OpcoesBebida tipo;
