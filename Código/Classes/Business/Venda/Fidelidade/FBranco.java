@@ -1,4 +1,6 @@
-package Business.Venda;
+package Business.Venda.Fidelidade;
+
+import Business.Venda.Pedido;
 
 public class FBranco implements IFidelidade {
     @Override

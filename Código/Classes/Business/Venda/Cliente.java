@@ -7,6 +7,12 @@ import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.Set;
 
+import Business.Venda.Fidelidade.FFEV;
+import Business.Venda.Fidelidade.FPrata;
+import Business.Venda.Fidelidade.FPreto;
+import Business.Venda.Fidelidade.FBranco;
+import Business.Venda.Fidelidade.IFidelidade;
+
 public class Cliente implements Serializable {
     public static final long serialVersionUID = 2496;
     private IFidelidade fidelidade;
