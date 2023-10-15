@@ -1,0 +1,37 @@
+version: 2.1
+
+executors:
+  java:
+    docker:
+      - image: 'cimg/openjdk:13.0-node'
+
+commands:
+  build_project:
+    description: Install the project dependencies and build the project
+    steps:
+      - checkout
+      - run:
+          name: Installing dependencies
+          command: mvn clean install
+      - run:
+          name: Building project
+          command: mvn compile
+  
+  test_project:
+    description: Based on the builded project it run the tests
+    steps:
+      - run:
+          name: Testing build
+          command: mvn test
+
+jobs:
+  build-and-test:
+    executor: java
+    steps:
+      - build_project
+      - test_project
+
+workflows:
+  build-and-test:
+    jobs:
+      - build-and-test

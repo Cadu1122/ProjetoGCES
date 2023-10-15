@@ -1,4 +1,4 @@
-package App;
+package ProjetoGCES.App;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,15 +16,15 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
-import Business.Venda.Cliente;
-import Business.Produtos.OpcoesAdicionais;
-import Business.Produtos.OpcoesBebida;
-import Business.Venda.Pedido;
-import Business.Produtos.Pizza;
-import Business.Produtos.PratoFeito;
-import Business.Produtos.Produto;
-import Business.Produtos.Sanduiche;
-import Business.Produtos.Bebida;
+import ProjetoGCES.Business.Produtos.Bebida;
+import ProjetoGCES.Business.Venda.Cliente;
+import ProjetoGCES.Business.Produtos.OpcoesAdicionais;
+import ProjetoGCES.Business.Produtos.OpcoesBebida;
+import ProjetoGCES.Business.Venda.Pedido;
+import ProjetoGCES.Business.Produtos.Pizza;
+import ProjetoGCES.Business.Produtos.PratoFeito;
+import ProjetoGCES.Business.Produtos.Produto;
+import ProjetoGCES.Business.Produtos.Sanduiche;
 
 public class App {
     public static final File ARQUIVO_ARMAZENAMENTO = new File("historico.dat");
