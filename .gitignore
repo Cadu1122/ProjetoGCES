@@ -429,3 +429,4 @@ $RECYCLE.BIN/
 /local
 
 src/main/resources/application-local.properties
+historico.dat

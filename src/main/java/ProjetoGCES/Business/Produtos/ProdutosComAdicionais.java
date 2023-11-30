@@ -1,4 +1,4 @@
-package Business.Produtos;
+package ProjetoGCES.Business.Produtos;
 
 import java.util.HashSet;
 import java.util.Set;

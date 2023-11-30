@@ -1,4 +1,4 @@
-package Business.Venda;
+package ProjetoGCES.Business.Venda;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -7,11 +7,11 @@ import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.Set;
 
-import Business.Venda.Fidelidade.FFEV;
-import Business.Venda.Fidelidade.FPrata;
-import Business.Venda.Fidelidade.FPreto;
-import Business.Venda.Fidelidade.FBranco;
-import Business.Venda.Fidelidade.IFidelidade;
+import ProjetoGCES.Business.Venda.Fidelidade.FFEV;
+import ProjetoGCES.Business.Venda.Fidelidade.FPrata;
+import ProjetoGCES.Business.Venda.Fidelidade.FPreto;
+import ProjetoGCES.Business.Venda.Fidelidade.FBranco;
+import ProjetoGCES.Business.Venda.Fidelidade.IFidelidade;
 
 public class Cliente implements Serializable {
     public static final long serialVersionUID = 2496;
@@ -28,7 +28,15 @@ public class Cliente implements Serializable {
 
     public void addPedido(Pedido pedido){
         calcularDesconto(pedido);
+        if(existeId(pedido.getId())){
+            throw new IllegalStateException("O pedido precisa ter um ID diferente");
+        }
         this.pedidos.add(pedido);
+    }
+
+    private boolean existeId(int id) {
+        return pedidos.stream()
+                    .anyMatch(a -> a.getId() == id);
     }
 
     /**
@@ -38,8 +46,67 @@ public class Cliente implements Serializable {
     public double mediaAvaliacoes(){
         return pedidos.stream()
             .mapToInt(a -> a.getAvaliacao())
+            .filter((a) -> a != -1)
             .average()
             .orElse(0);
+    }
+
+    public int menorAvaliacao() {
+        return pedidos.stream()
+            .mapToInt(a -> a.getAvaliacao())
+            .filter((a) -> a != -1)
+            .min()
+            .orElse(0);
+    }
+
+    public int maiorAvaliacao() {
+        return pedidos.stream()
+            .mapToInt(a -> a.getAvaliacao())
+            .filter((a) -> a != -1)
+            .max()
+            .orElse(0);
+    }
+
+    public double pedidoMaisCaro() {
+        return pedidos.stream()
+            .mapToDouble(a -> a.valorTotal())
+            .max()
+            .orElse(0);
+    }
+
+    public double pedidoMaisBarato() {
+        return pedidos.stream()
+            .mapToDouble(a -> a.valorTotal())
+            .min()
+            .orElse(0);
+    }
+
+    public int maiorPedido() {
+        return pedidos.stream()
+            .mapToInt(a -> a.tamanho())
+            .max()
+            .orElse(0);
+    }
+
+    public int menorPedido() {
+        return pedidos.stream()
+            .mapToInt(a -> a.tamanho())
+            .min()
+            .orElse(0);
+    }
+
+    public LocalDate pedidoMaisAntigo() {
+        return pedidos.stream()
+                .map(a -> a.getData())
+                .reduce((a, b) -> a.compareTo(b) < 0 ? a : b)
+                .orElse(null);
+    }
+
+    public LocalDate pedidoMaisNovo() {
+        return pedidos.stream()
+                .map(a -> a.getData())
+                .reduce((a, b) -> a.compareTo(b) < 0 ? b : a)
+                .orElse(null);
     }
 
     /**
@@ -120,11 +187,36 @@ public class Cliente implements Serializable {
     }
 
     public IFidelidade getFidelidade() {
+        verificarFidelidade();
         return fidelidade;
     }
 
     public Set<Pedido> getPedidos() {
         return pedidos;
+    }
+
+    public double mediaGastos() {
+        return pedidos.stream()
+                    .mapToDouble(a -> a.getValorPago())
+                    .average()
+                    .orElse(0);
+    }
+
+    public double totalGastos() {
+        return pedidos.stream()
+                    .mapToDouble(a -> a.getValorPago())
+                    .sum();
+    }
+
+    public int totalPedidos() {
+        return pedidos.size();
+    }
+
+    public int totalPedidosAvaliados() {
+        return (int) pedidos.stream()
+                    .mapToInt(a -> a.getAvaliacao())
+                    .filter(a -> a != -1)
+                    .count();
     }
 
     @Override

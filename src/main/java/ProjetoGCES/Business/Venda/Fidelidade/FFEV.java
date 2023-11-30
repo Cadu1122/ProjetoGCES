@@ -1,6 +1,6 @@
-package Business.Venda.Fidelidade;
+package ProjetoGCES.Business.Venda.Fidelidade;
 
-import Business.Venda.Pedido;
+import ProjetoGCES.Business.Venda.Pedido;
 
 public class FFEV implements IFidelidade {
     public static final double VALOR_DESC = 0.2F;

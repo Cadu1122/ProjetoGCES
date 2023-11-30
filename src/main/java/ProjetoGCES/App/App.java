@@ -1,77 +1,32 @@
 package ProjetoGCES.App;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
-import java.io.StreamCorruptedException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
-import Business.Produtos.Bebida;
-import Business.Venda.Cliente;
-import Business.Produtos.OpcoesAdicionais;
-import Business.Produtos.OpcoesBebida;
-import Business.Venda.Pedido;
-import Business.Produtos.Pizza;
-import Business.Produtos.PratoFeito;
-import Business.Produtos.Produto;
-import Business.Produtos.Sanduiche;
+import ProjetoGCES.Business.Produtos.Bebida;
+import ProjetoGCES.Business.Venda.Cliente;
+import ProjetoGCES.Business.Produtos.OpcoesAdicionais;
+import ProjetoGCES.Business.Produtos.OpcoesBebida;
+import ProjetoGCES.Business.Produtos.OpcoesPratoPersonalizado;
+import ProjetoGCES.Business.Venda.Pedido;
+import ProjetoGCES.DAO.DAOManager;
+import ProjetoGCES.Business.Produtos.Pizza;
+import ProjetoGCES.Business.Produtos.PratoFeito;
+import ProjetoGCES.Business.Produtos.PratoPersonalizado;
+import ProjetoGCES.Business.Produtos.Produto;
+import ProjetoGCES.Business.Produtos.Sanduiche;
 
 public class App {
-    public static final File ARQUIVO_ARMAZENAMENTO = new File("historico.dat");
-    public static Set<Cliente> clientes = new HashSet<Cliente>();
+    public static Set<Cliente> clientes;
     public static Scanner teclado = new Scanner(System.in);
-    public static int idGenerator = 1;
 
     public static void main(String[] args) {
-        recuperarClientes();
+        clientes = DAOManager.recuperarClientes();
         menu();
-        armazenarClientes();
-    }
-
-    /**
-     * Carrega os clientes do banco de dados
-     */
-    @SuppressWarnings("unchecked")
-    public static void recuperarClientes() {
-        try {
-            if(ARQUIVO_ARMAZENAMENTO.exists()) {
-                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(ARQUIVO_ARMAZENAMENTO));
-                clientes = (Set<Cliente>) objectInputStream.readObject();
-                idGenerator = clientes.stream()
-                    .mapToInt(a -> a.getPedidos().stream()
-                        .mapToInt(b -> b.getId())
-                        .max()
-                        .orElse(0))
-                    .max()
-                    .orElse(0) + 1;
-                objectInputStream.close();
-            }
-        } catch (SecurityException e) {
-            System.err.println("O acesso ao arquivo foi negado");
-            esperar();
-        } catch (OptionalDataException e) {
-            System.err.println("Os dados foram armazenados de forma incorreta no ultimo salvamento");
-            esperar();
-        } catch (StreamCorruptedException e) {
-            System.err.println("Ocorreu um erro ao ler os arquivos");
-            esperar();
-        } catch (IOException e) {
-            System.err.println("Ocorreu um erro ao acessar os arquivos");
-            esperar();
-        } catch (Exception e) {
-            System.err.println("Um erro inesperado ocorreu");
-            esperar();
-        }
+        DAOManager.armazenarClientes(clientes);
     }
 
     /**
@@ -90,7 +45,9 @@ public class App {
             System.out.println("3 - Realizar pedido");
             System.out.println("4 - Gerar extrato resumido dos pedidos de um cliente");
             System.out.println("5 - Gerar extrato detalhado de um dos pedidos de um cliente");
-            System.out.println("6 - Mostrar avaliação média de um cliente");
+            System.out.println("6 - Mostrar dados das avaliações de um cliente");
+            System.out.println("7 - Mostrar dados dos pedidos de um cliente");
+            System.out.println("8 - Mostrar dados dos pedidos de todos os clientes");
             try {
                 comando = teclado.nextInt();
                 teclado.nextLine();
@@ -113,8 +70,13 @@ public class App {
                         extratoDetalhado();
                         break;
                     case 6:
-                        avaliacaoMedia();
+                        dadosAvaliacao();
                         break;
+                    case 7:
+                        dadosPedido();
+                        break;
+                    case 8:
+                        dadosGeraisPedido();
                     default:
                         System.err.println("O comando inserido não é reconhecido");
                 }
@@ -195,6 +157,7 @@ public class App {
                 System.out.println("2 - Bebida");
                 System.out.println("3 - Pizza");
                 System.out.println("4 - Sanduiche");
+                System.out.println("5 - Prato personalizado");
                 numPedido = teclado.nextInt();
                 teclado.nextLine();
                 switch (numPedido) {
@@ -217,13 +180,15 @@ public class App {
                     case 4:
                         aAdicionar = adicionarSanduiche();
                         break;
+                    case 5:
+                        aAdicionar = adicionarPratoPersonalizado();
                     default:
                         System.err.println("Essa opção não existe");
                         esperar();
                 }
                 if (aAdicionar != null) {
                     if(pedido == null) {
-                        pedido = new Pedido(idGenerator++, LocalDate.now(), aAdicionar);
+                        pedido = new Pedido(DAOManager.idGenerator++, LocalDate.now(), aAdicionar);
                     } else {
                         pedido.addProduto(aAdicionar);
                     }
@@ -253,6 +218,8 @@ public class App {
             System.out.println("2 - Suco");
             System.out.println("3 - Água");
             System.out.println("4 - Cerveja");
+            System.out.println("5 - Água com gás");
+            System.out.println("6 - Água tônica");
             opcao = teclado.nextInt();
             teclado.nextLine();
             switch (opcao) {
@@ -268,11 +235,17 @@ public class App {
                 case 4:
                     bebida = new Bebida(OpcoesBebida.CERVEJA);
                     break;
+                case 5:
+                    bebida = new Bebida(OpcoesBebida.AGUA_COM_GAS);
+                    break;
+                case 6:
+                    bebida = new Bebida(OpcoesBebida.AGUA_TONICA);
+                    break;
                 default:
                     System.err.println("Essa opção não existe");
                     limparTela();
             }
-        } while (opcao < 1 || opcao > 4);
+        } while (opcao < 1 || opcao > 6);
         return bebida;
     }
 
@@ -296,7 +269,7 @@ public class App {
             }
             limparTela();
         } while (opcao < 0 || opcao > 2);
-        Pizza pizza  = new Pizza(opcao == 2);
+        Pizza pizza = new Pizza(opcao == 2);
         OpcoesAdicionais opcoesAdicionais = null;
         do {
             opcoesAdicionais = adicionarAdicionais();
@@ -338,6 +311,22 @@ public class App {
         return sanduiche;
     } 
 
+    public static Produto adicionarPratoPersonalizado() {
+        OpcoesPratoPersonalizado opcoesPrato;
+        PratoPersonalizado pratoPersonalizado = null;
+        do {
+            opcoesPrato = acrescentarItem();
+            if(opcoesPrato != null) {
+                if(pratoPersonalizado == null) {
+                    pratoPersonalizado = new PratoPersonalizado(opcoesPrato);
+                } else {
+                    pratoPersonalizado.addComida(opcoesPrato);
+                }
+            }
+        } while(opcoesPrato != null);
+        return pratoPersonalizado;
+    }
+
     /**
      * Permite a seleção de um adicional para incluir a um produto
      * @return Adicional selecionado
@@ -357,6 +346,7 @@ public class App {
             System.out.println("5 - Picles");
             System.out.println("6 - Ovo");
             System.out.println("7 - Batata palha");
+            System.out.println("8 - Catupiry");
             opcao = teclado.nextInt();
             teclado.nextLine();
             switch (opcao) {
@@ -383,12 +373,68 @@ public class App {
                 case 7:
                     opcoesAdicionais = OpcoesAdicionais.BATATA_PALHA;
                     break;
+                case 8:
+                    opcoesAdicionais = OpcoesAdicionais.CATUPIRY;
+                    break;
                 default:
                     System.err.println("Essa opção não existe");
                     esperar();
             }
-        } while (opcao < 0 || opcao > 7);
+        } while (opcao < 0 || opcao > 8);
         return opcoesAdicionais;
+    }
+
+    public static OpcoesPratoPersonalizado acrescentarItem() {
+        OpcoesPratoPersonalizado opcaoPrato = null;
+        int opcao = 0;
+        do {
+            limparTela();
+            System.out.println("---------------------------------------------");
+            System.out.println("Insira as opções que deseja");
+            System.out.println("0 - Parar de selecionar");
+            System.out.println("1 - Arroz");
+            System.out.println("2 - Feijão");
+            System.out.println("3 - Batata Frita");
+            System.out.println("4 - Salada");
+            System.out.println("5 - Macarrão");
+            System.out.println("6 - Frango");
+            System.out.println("7 - Boi");
+            System.out.println("8 - Porco");
+            opcao = teclado.nextInt();
+            teclado.nextLine();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    opcaoPrato = OpcoesPratoPersonalizado.ARROZ;
+                    break;
+                case 2:
+                    opcaoPrato = OpcoesPratoPersonalizado.FEIJAO;
+                    break;
+                case 3:
+                    opcaoPrato = OpcoesPratoPersonalizado.BATATA_FRITA;
+                    break;
+                case 4:
+                    opcaoPrato = OpcoesPratoPersonalizado.SALADA;
+                    break;
+                case 5:
+                    opcaoPrato = OpcoesPratoPersonalizado.MACARRAO;
+                    break;
+                case 6:
+                    opcaoPrato = OpcoesPratoPersonalizado.FRANGO;
+                    break;
+                case 7:
+                    opcaoPrato = OpcoesPratoPersonalizado.BOI;
+                    break;
+                case 8:
+                    opcaoPrato = OpcoesPratoPersonalizado.PORCO;
+                    break;
+                default:
+                    System.err.println("Essa opção não existe");
+                    esperar();
+            }
+        } while (opcao != 0);
+        return opcaoPrato;
     }
 
     /**
@@ -410,14 +456,14 @@ public class App {
         int avaliacao = 0;
         do {
             limparTela();
-            System.out.println("Digite quantas estrelas, de 0 a 5, será dada a esse pedido");
+            System.out.println("Digite quantas estrelas, de 0 a 5, serão dadas a esse pedido");
             avaliacao = teclado.nextInt();
             teclado.nextLine();
             if (avaliacao >= 0 && avaliacao <= 5) {
                 pedido.setAvaliacao(avaliacao);
                 System.out.println("Obrigado pela avaliação");
             } else {
-                System.err.println("Esse valor não é suportada");
+                System.err.println("Esse valor não é suportado");
             }
             esperar();
         } while (avaliacao < 0 || avaliacao > 5);
@@ -466,20 +512,387 @@ public class App {
         }
     }
 
+    public static void dadosAvaliacao() {
+        int opcao = 0;
+        limparTela();
+        System.out.println("---------------------------------------------");
+        System.out.println("Dados das avaliações do cliente");
+        System.out.println("---------------------------------------------");
+        Cliente cliente = localizarCliente();
+        if(cliente != null) {
+            do {
+                limparTela();
+                System.out.println("---------------------------------------------");
+                System.out.println("Dados das avaliações do cliente");
+                System.out.println("---------------------------------------------");
+                System.out.println("Selecione o dado que deseja acessar para " + cliente);
+                System.out.println("0 - Retornar ao menu");
+                System.out.println("1 - Mostrar avaliação média de um cliente");
+                System.out.println("2 - Mostrar menor avaliação de um cliente");
+                System.out.println("3 - Mostrar maior avaliação de um cliente");
+                opcao = teclado.nextInt();
+                teclado.nextLine();
+                switch (opcao) {
+                    case 0:
+                        break;
+                    case 1:
+                        avaliacaoMedia(cliente);
+                        break;
+                    case 2:
+                        menorAvaliacao(cliente);
+                        break;
+                    case 3:
+                        maiorAvaliacao(cliente);
+                        break;
+                    default:
+                        System.err.println("Essa opção não existe");
+                        esperar();
+                }
+            } while (opcao != 0);
+        } 
+    }
+
     /**
      * Mostra as avaliações médias de um determinado cliente
      */
-    public static void avaliacaoMedia() {
+    public static void avaliacaoMedia(Cliente cliente) {
         limparTela();
         System.out.println("---------------------------------------------");
         System.out.println("Mostrar avaliação média de um cliente");
         System.out.println("---------------------------------------------");
+        System.out.println("Avaliação média: " + cliente.mediaAvaliacoes());
+        esperar();
+    }
+
+    public static void menorAvaliacao(Cliente cliente) {
+        limparTela();
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar menor avaliação de um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Menor avaliação: " + cliente.menorAvaliacao());
+        esperar();
+    }
+
+    public static void maiorAvaliacao(Cliente cliente) {
+        limparTela();
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar maior avaliação de um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Maior avaliação: " + cliente.maiorAvaliacao());
+        esperar();
+    }
+
+    public static void dadosPedido() {
+        int opcao = 0;
+        limparTela();
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar dados dos pedidos de um cliente");
+        System.out.println("---------------------------------------------");
         Cliente cliente = localizarCliente();
         if(cliente != null) {
-            System.out.println("---------------------------------------------");
-            System.out.println("Avaliação média: " + cliente.mediaAvaliacoes());
-            esperar();
+            do {
+                limparTela();
+                System.out.println("---------------------------------------------");
+                System.out.println("Mostrar dados dos pedidos de um cliente");
+                System.out.println("---------------------------------------------");
+                System.out.println("Selecione o dado que desenja acessar");
+                System.out.println("0 - Retornar ao menu");
+                System.out.println("1 - Mostrar pedido mais caro feito por um cliente");
+                System.out.println("2 - Mostrar pedido mais barato feito por um cliente");
+                System.out.println("3 - Mostrar número de itens do maior pedido feito por um cliente");
+                System.out.println("4 - Mostrar número de itens do menor pedido feito por um cliente");
+                System.out.println("5 - Mostrar data do pedido mais antigo feito por um cliente");
+                System.out.println("6 - Mostrar data do pedido mais recente feito por um cliente");
+                System.out.println("7 - Mostrar média de gastos dos pedidos feitos por um cliente");
+                System.out.println("8 - Mostrar total de gastos dos pedidos feitos por um cliente");
+                System.out.println("9 - Mostrar total de pedidos feitos por um cliente");
+                System.out.println("10 - Mostrar total de pedidos avaliados por um cliente");
+                switch (opcao) {
+                    case 0:
+                        break;
+                    case 1:
+                        pedidoMaisCaro(cliente);
+                        break;
+                    case 2:
+                        pedidoMaisBarato(cliente);
+                        break;
+                    case 3:
+                        maiorPedido(cliente);
+                        break;
+                    case 4:
+                        menorPedido(cliente);
+                        break;
+                    case 5:
+                        pedidoMaisAntigo(cliente);
+                        break;
+                    case 6:
+                        pedidoMaisNovo(cliente);
+                        break;
+                    case 7:
+                        mediaGastos(cliente);
+                        break;
+                    case 8:
+                        totalGastos(cliente);
+                        break;
+                    case 9:
+                        totalPedidos(cliente);
+                        break;
+                    case 10:
+                        totalPedidosAvaliados(cliente);
+                        break;
+                    default:
+                        System.err.println("Essa opção não existe");
+                        esperar();
+                }
+            } while (opcao != 0);
         }
+    }
+
+    public static void pedidoMaisCaro(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais caro feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais caro: " + cliente.pedidoMaisCaro());
+        esperar();
+    }
+
+    public static void pedidoMaisBarato(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais barato feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais barato: " + cliente.pedidoMaisBarato());
+        esperar();
+    }
+
+    public static void maiorPedido(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar número de itens do maior pedido feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Maior pedido: " + cliente.maiorPedido());
+        esperar();
+    }
+
+    public static void menorPedido(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar número de itens do menor pedido feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Menor pedido: " + cliente.menorPedido());
+        esperar();
+    }
+
+    public static void pedidoMaisAntigo(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais antigo feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais antigo: " + cliente.pedidoMaisAntigo());
+        esperar();
+    }
+
+    public static void pedidoMaisNovo(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais recente feito por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais recente: " + cliente.pedidoMaisNovo());
+        esperar();
+    }
+
+    public static void mediaGastos(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar média de gastos dos pedidos feitos por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Média de gastos: " + cliente.mediaGastos());
+        esperar();
+    }
+
+    public static void totalGastos(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar total de gastos dos pedidos feitos por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de gastos: " + cliente.totalGastos());
+        esperar();
+    }
+
+    public static void totalPedidos(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar total de pedidos feitos por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de pedidos: " + cliente.totalPedidos());
+        esperar();
+    }
+
+    public static void totalPedidosAvaliados(Cliente cliente) {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar total de pedidos avaliados por um cliente");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de pedidos: " + cliente.totalPedidosAvaliados());
+        esperar();
+    }
+
+    public static void dadosGeraisPedido() {
+        int opcao = 0;
+        do{
+            limparTela();
+            System.out.println("---------------------------------------------");
+            System.out.println("Mostrar dados dos pedidos de todos os clientes");
+            System.out.println("---------------------------------------------");
+            System.out.println("Selecione o dado que deseja acessar");
+            System.out.println("0 - Retornar ao menu");
+            System.out.println("1 - Mostrar pedido mais caro já feito");
+            System.out.println("2 - Mostrar pedido mais barato já feito");
+            System.out.println("3 - Mostrar número de itens do maior pedido já feito");
+            System.out.println("4 - Mostrar número de itens do menor pedido já feito");
+            System.out.println("5 - Mostrar pedido mais antigo já feito");
+            System.out.println("6 - Mostrar pedido mais recente já feito");
+            System.out.println("7 - Mostrar gstos médios dos clientes");
+            System.out.println("8 - Mostrar gastos totais dos clientes");
+            System.out.println("9 - Mostrar total de pedidos feitos");
+            System.out.println("10 - Mostrar total de pedidos avaliados");
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    pedidoMaisCaroGeral();
+                    break;
+                case 2:
+                    pedidoMaisBaratoGeral();
+                    break;
+                case 3:
+                    maiorPedidoGeral();
+                    break;
+                case 4:
+                    menorPedidoGeral();
+                    break;
+                case 5:
+                    pedidoMaisAntigoGeral();
+                    break;
+                case 6:
+                    pedidoMaisNovoGeral();
+                    break;
+                case 7:
+                    mediaGastosGeral();
+                    break;
+                case 8:
+                    totalGastosGeral();
+                    break;
+                case 9:
+                    totalPedidosGeral();
+                    break;
+                case 10:
+                    totalPedidosAvaliadosGeral();
+                    break;
+                default:
+                    System.err.println("Essa opção não existe");
+                    esperar();
+            }
+            opcao = teclado.nextInt();
+            teclado.nextLine();
+        } while (opcao != 0);
+    }
+
+    public static void pedidoMaisCaroGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais caro já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais caro: " + clientes.stream()
+                                                        .mapToDouble(a -> a.pedidoMaisCaro())
+                                                        .max()
+                                                        .orElse(0));
+        esperar();
+    }
+
+    public static void pedidoMaisBaratoGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais barato já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais barato: " + clientes.stream()
+                                                        .mapToDouble(a -> a.pedidoMaisBarato())
+                                                        .min()
+                                                        .orElse(0));
+        esperar();
+    }
+
+    public static void maiorPedidoGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar número de itens do maior pedido já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Maior pedido: " + clientes.stream()
+                                                    .mapToInt(a -> a.maiorPedido())
+                                                    .max()
+                                                    .orElse(0));
+        esperar();
+    }
+
+    public static void menorPedidoGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar número de itens do menor pedido já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Menor pedido: " + clientes.stream()
+                                                    .mapToInt(a -> a.menorPedido())
+                                                    .min()
+                                                    .orElse(0));
+        esperar();
+    }
+
+    public static void pedidoMaisAntigoGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais antigo já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais antigo: " + clientes.stream()
+                                                            .map(a -> a.pedidoMaisAntigo())
+                                                            .reduce((a, b) -> a.compareTo(b) < 0 ? a : b)
+                                                            .orElse(null));
+        esperar();
+    }
+
+    public static void pedidoMaisNovoGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar pedido mais novo já feito");
+        System.out.println("---------------------------------------------");
+        System.out.println("Pedido mais novo: " + clientes.stream()
+                                                            .map(a -> a.pedidoMaisNovo())
+                                                            .reduce((a, b) -> a.compareTo(b) < 0 ? b : a)
+                                                            .orElse(null));
+        esperar();
+    }
+
+    public static void mediaGastosGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar gastos médios dos clientes");
+        System.out.println("---------------------------------------------");
+        System.out.println("Média de gastos: " + clientes.stream()
+                                                .mapToDouble(a -> a.mediaGastos())
+                                                .average()
+                                                .orElse(0));
+        esperar();
+    }
+
+    public static void totalGastosGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar gastos totais dos clientes");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de gastos: " + clientes.stream()
+                                                .mapToDouble(a -> a.totalGastos())
+                                                .sum());
+    }
+
+    public static void totalPedidosGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar total de pedidos feitos");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de pedidos: " + clientes.stream()
+                                                        .mapToInt(a -> a.totalPedidos())
+                                                        .sum());
+        esperar();
+    }
+
+    public static void totalPedidosAvaliadosGeral() {
+        System.out.println("---------------------------------------------");
+        System.out.println("Mostrar total de pedidos avaliados");
+        System.out.println("---------------------------------------------");
+        System.out.println("Total de pedidos: " + clientes.stream()
+                                                        .mapToInt(a -> a.totalPedidosAvaliados())
+                                                        .sum());
+        esperar();
     }
 
     /**
@@ -515,34 +928,5 @@ public class App {
     public static void limparTela() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
-    }
-
-    /**
-     * Salva clientes no banco de dados
-     */
-    public static void armazenarClientes() {
-        try {
-            if(!ARQUIVO_ARMAZENAMENTO.exists()) {
-                ARQUIVO_ARMAZENAMENTO.createNewFile();
-            }
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(ARQUIVO_ARMAZENAMENTO));
-            objectOutputStream.writeObject(clientes);
-            objectOutputStream.close();
-        } catch (SecurityException e) {
-            System.err.println("O acesso ao arquivo foi negado.");
-            esperar();
-        } catch (StreamCorruptedException e) {
-            System.err.println("Ocorreu um erro ao salvar os arquivos.");
-            esperar();
-        } catch (NotSerializableException e) {
-            System.err.println("Não foi possivel tranferir os dados para o arquivo.");
-            esperar();
-        } catch (IOException e) {
-            System.err.println("Ocorreu um erro ao acessar os arquivos.");
-            esperar();
-        } catch (Exception e) {
-            System.err.println("Um erro inesperado ocorreu.");
-            esperar();
-        }
     }
 }

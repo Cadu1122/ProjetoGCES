@@ -1,16 +1,18 @@
 package ProjetoGCES.Business.Produtos;
 
-public enum OpcoesBebida {
-    CERVEJA(8),
-    AGUA(2),
-    SUCO(5),
-    REFRIGERANTE(5),
-    AGUA_COM_GAS(3),
-    AGUA_TONICA(5);
+public enum OpcoesPratoPersonalizado {
+    ARROZ(5),
+    FEIJAO(4),
+    BATATA_FRITA(6),
+    SALADA(3),
+    MACARRAO(5),
+    FRANGO(7),
+    BOI(7),
+    PORCO(7);
 
     private double preco;
-    
-    private OpcoesBebida(double preco) {
+
+    private OpcoesPratoPersonalizado(double preco) {
         this.preco = preco;
     }
 
