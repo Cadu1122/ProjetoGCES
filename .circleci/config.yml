@@ -38,6 +38,7 @@ workflows:
   release:
     jobs:
       - build-and-test:
+          name: staging-build
           filters: &branch_filter
             branches:
               ignore: main
@@ -47,6 +48,7 @@ workflows:
             - build-and-test
           filters: *branch_filter
       - build-and-test:
+          name: prod-build
           requires:
             - promote
           filters: *branch_filter
