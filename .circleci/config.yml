@@ -36,16 +36,17 @@ workflows:
     jobs:
       - build-and-test
   release:
-    - build-and-test:
-        filters: &branch_filter
-          branches:
-            ignore: main
-    - promote:
-        type: approval
-        requires:
-          - build-and-test
-        filters: *branch_filter
-    - build-and-test:
-        requires:
-          - promote
-        filters: *branch_filter
+    jobs:
+      - build-and-test:
+          filters: &branch_filter
+            branches:
+              ignore: main
+      - promote:
+          type: approval
+          requires:
+            - build-and-test
+          filters: *branch_filter
+      - build-and-test:
+          requires:
+            - promote
+          filters: *branch_filter
