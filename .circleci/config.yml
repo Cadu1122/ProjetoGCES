@@ -41,7 +41,7 @@ workflows:
           name: staging-build
           filters: &branch_filter
             branches:
-              ignore: main
+              only: main
       - promote:
           type: approval
           requires:
