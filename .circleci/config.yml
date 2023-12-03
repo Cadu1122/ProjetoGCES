@@ -35,3 +35,20 @@ workflows:
   build-and-test:
     jobs:
       - build-and-test
+  release:
+    jobs:
+      - build-and-test:
+          name: staging-build
+          filters: &branch_filter
+            branches:
+              only: main
+      - promote:
+          type: approval
+          requires:
+            - staging-build
+          filters: *branch_filter
+      - build-and-test:
+          name: prod-build
+          requires:
+            - promote
+          filters: *branch_filter
