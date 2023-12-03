@@ -1,9 +1,10 @@
-package Business.Produtos;
+package ProjetoGCES.Business.Produtos;
 
 public enum OpcoesComida {
     PRATO_FEITO(15),
     SANDUICHE(12),
-    PIZZA(25);
+    PIZZA(25),
+    PRATO_PERSONALIZADO(5);
 
     private double preco;
 

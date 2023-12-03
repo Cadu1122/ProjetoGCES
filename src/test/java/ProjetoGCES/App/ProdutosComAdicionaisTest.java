@@ -1,4 +1,4 @@
-package Testes;
+package ProjetoGCES.App;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import Business.OpcoesAdicionais;
-import Business.ProdutosComAdicionais;
+import ProjetoGCES.Business.Produtos.OpcoesAdicionais;
+import ProjetoGCES.Business.Produtos.ProdutosComAdicionais;
 
 public class ProdutosComAdicionaisTest {
     private ProdutosComAdicionais produtoComAdicionais;

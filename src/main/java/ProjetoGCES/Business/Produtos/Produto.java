@@ -1,4 +1,4 @@
-package Business.Produtos;
+package ProjetoGCES.Business.Produtos;
 
 import java.io.Serializable;
 

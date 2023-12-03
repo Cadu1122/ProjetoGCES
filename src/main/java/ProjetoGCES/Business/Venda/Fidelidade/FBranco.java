@@ -1,6 +1,6 @@
-package Business.Venda.Fidelidade;
+package ProjetoGCES.Business.Venda.Fidelidade;
 
-import Business.Venda.Pedido;
+import ProjetoGCES.Business.Venda.Pedido;
 
 public class FBranco implements IFidelidade {
     @Override

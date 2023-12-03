@@ -1,4 +1,4 @@
-package Business.Produtos;
+package ProjetoGCES.Business.Produtos;
 
 public enum OpcoesAdicionais {
     PEPPERONI(4),
@@ -7,7 +7,8 @@ public enum OpcoesAdicionais {
     QUEIJO(2),
     PICLES(2),
     OVO(2),
-    BATATA_PALHA(2);
+    BATATA_PALHA(2),
+    CATUPIRY(2);
 
     private double preco;
 

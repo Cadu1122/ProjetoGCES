@@ -1,4 +1,4 @@
-package Testes;
+package ProjetoGCES.App;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import Business.FPrata;
-import Business.Pedido;
-import Business.Produto;
+import ProjetoGCES.Business.Venda.Fidelidade.FPrata;
+import ProjetoGCES.Business.Venda.Pedido;
+import ProjetoGCES.Business.Produtos.Produto;
 
 public class FPrataTest {
     private FPrata fPrata;

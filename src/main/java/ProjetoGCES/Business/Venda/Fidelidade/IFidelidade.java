@@ -1,7 +1,7 @@
-package Business.Venda.Fidelidade;
+package ProjetoGCES.Business.Venda.Fidelidade;
 
 import java.io.Serializable;
-import Business.Venda.Pedido;
+import ProjetoGCES.Business.Venda.Pedido;
 
 public interface IFidelidade extends Serializable {
 

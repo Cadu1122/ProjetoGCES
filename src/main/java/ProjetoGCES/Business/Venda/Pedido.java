@@ -1,4 +1,4 @@
-package Business.Venda;
+package ProjetoGCES.Business.Venda;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
-import Business.Produtos.Produto;
+import ProjetoGCES.Business.Produtos.Produto;
 
 public class Pedido implements Serializable {
     public static final long serialVersionUID = 2469;
@@ -26,7 +26,7 @@ public class Pedido implements Serializable {
     }
 
     public void addProduto(Produto produto) {
-        if(produtos.size() > 10) {
+        if(produtos.size() >= 10) {
             throw new IndexOutOfBoundsException("O pedido não pode ter mais de 10 produtos");
         }
         produtos.add(produto);
@@ -59,6 +59,9 @@ public class Pedido implements Serializable {
     }
 
     public void setData(LocalDate data) {
+        if (data.isAfter(LocalDate.now())) {
+            throw new IllegalStateException("Data futura não é permitida");
+        }
         this.data = data;
     }
 
@@ -84,6 +87,14 @@ public class Pedido implements Serializable {
         return "Número do pedido: " + getId() +
         "\nData de realização do pedido: " + getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
         "\nValor a pagar: R$" +  new DecimalFormat("#.##").format(valorPago);
+    }
+
+    public int tamanho() {
+        return produtos.size();
+    }
+
+    public boolean hasProduto(Produto produto) {
+        return produtos.contains(produto);
     }
 
     @Override
