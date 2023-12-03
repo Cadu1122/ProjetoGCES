@@ -45,7 +45,7 @@ workflows:
       - promote:
           type: approval
           requires:
-            - build-and-test
+            - staging-build
           filters: *branch_filter
       - build-and-test:
           name: prod-build
